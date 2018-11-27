@@ -2,7 +2,7 @@
 
 ## Authors
 
-* Eric J Ma, Novartis Institutes for Biomedical Research.
+- Eric J Ma
 
 ## Abstract
 
