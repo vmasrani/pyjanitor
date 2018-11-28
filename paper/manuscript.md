@@ -11,9 +11,10 @@ tasks, and outline generalizable principles for data processing API design.
 
 ## Introduction
 
-In a data-oriented age, data preprocessing is an unavoidable task. Data wrangling is thought to occupy 80% of a data scientist’s time [^datacleaning]. There are multiple avenues to make this 80% of time more efficiently spent, such as providing proper schema and metadata documentation on data stores, providing data scientists with cleaned data, and providing high performance compute for data processing. An avenue possibly less explored is the ease-of-use of tooling in the hands of a data scientist.
+In a data-oriented age, data preprocessing is an unavoidable task. Data wrangling is thought to occupy 80% of a data scientist’s time [^datacleaning] [^datacleaning2]. There are multiple avenues to make this 80% of time more efficiently spent, such as providing proper schema and metadata documentation on data stores, providing data scientists with cleaned data, and providing high performance compute for data processing. An avenue possibly less explored is the ease-of-use of tooling in the hands of a data scientist.
 
 [^datacleaning]: https://www.nytimes.com/2014/08/18/technology/for-big-data-scientists-hurdle-to-insights-is-janitor-work.html
+[^datacleaning2]: https://www.jstatsoft.org/article/view/v059i10
 
 Python, a high-level programming language designed for ease of use, is one of the two most popular data science languages, the other being the R statistical language [^R]. The breadth of tools available in both languages, and the development of interoperability packages (rpy2 [^rpy2], reticulate [^reticulate]), reflect the popularity of high-level, easy-to-use languages for wrangling data. Within the PyData stack, `pandas` is the *de facto* tool for data manipulation in the Python programming language. As reflected by the eye-catching and pun-laden title, “Pandas responsible for Python explosion” [^explosion], without `pandas` and the rest of the PyData stack, the Python programming language probably would have remained a hobbyist, scripting-oriented language. (By no means does my previous comment diminish the role of the other packages in the ecosystem; individual elements in a strong ecosystem play well with one another, and the PyData ecosystem is a strong and vibrant one.)
 
