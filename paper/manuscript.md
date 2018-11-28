@@ -49,8 +49,7 @@ del df['column_name_14']
 df['column_name_13'] = df['column_name_13'].apply(np.log10)
 ```
 
-Through many years of popularity, this coding style has become established as being idiomatic. However, this is also a non-fluent expression of what is being accomplished, which hampers readability,
-and hence maintainability. In terms of API design, we might want a block of code that reads as follows:
+Through many years of popularity, this coding style has become established as being idiomatic. However, this is also a non-fluent expression of what is being accomplished, which hampers readability, and hence maintainability. In terms of API design, we might want a block of code that reads as follows:
 
 ```python
 import pandas as pd
@@ -65,8 +64,7 @@ df = (
 )
 ```
 
-This is the API design that `pyjanitor` aims to provide to `pandas` users. By using a fluent API design, `pyjanitor` explicitly targets a `pandas`-compatible API that empowers data scientists to
-express their data processing code using an expressive, domain-specific-language-like (DSL-like) code.
+This is the API design that `pyjanitor` aims to provide to `pandas` users. By using a fluent API design, `pyjanitor` explicitly targets a `pandas`-compatible API that empowers data scientists to express their data processing code using an expressive, domain-specific-language-like (DSL-like) code.
 
 ## `pyjanitor`: History, Design, and Architecture
 
@@ -106,10 +104,9 @@ Underneath each data cleaning function, we use lower-level `pandas` syntax. As s
 
 ### Design
 
-`pyjanitor` functions are named with verb expressions. This helps achieve the DSL-like nature of the API. Hence, if I want to “clean names”, the end user can call on the `.clean_names()` function; if the end user wants to “remove all empty rows and columns, they can call on `.remove_empty()`. As far as possible, function names are expressed using simple English verbs that are understandable
-cross-culturally, to ensure that this API is inclusive and accessible to the widest subset of users possible.
+`pyjanitor` functions are named with verb expressions. This helps achieve the DSL-like nature of the API. Hence, if I want to “clean names”, the end user can call on the `.clean_names()` function; if the end user wants to “remove all empty rows and columns, they can call on `.remove_empty()`. As far as possible, function names are expressed using simple English verbs that are understandable cross-culturally, to ensure that this API is inclusive and accessible to the widest subset of users possible.
 
-Likewise, keyword arguments are also named with verb expressions. For example, if one wants to preserve and record the original column names before cleaning, one can add the `preserve_original` keyword argument to the `.clean_names` method:
+Keyword arguments are also likewise named with verb expressions. For example, if one wants to preserve and record the original column names before cleaning, one can add the `preserve_original` keyword argument to the `.clean_names` method:
 
 ```python
 df.clean_names(preserve_original=True, remove_special=True, ...)
@@ -119,9 +116,9 @@ As show in the code block example above, other keyword arguments that have been 
 
 ### Documentation and Development
 
-API Documentation for `pyjanitor` is available on ReadTheDocs, at [https://pyjanitor.readthedocs.io/](https://pyjanitor.readthedocs.io/ "https://pyjanitor.readthedocs.io/").
+API Documentation for `pyjanitor` is available on ReadTheDocs, at [https://pyjanitor.readthedocs.io/](https://pyjanitor.readthedocs.io/).
 
-Additionally, development takes place on GitHub, at: [https://github.com/ericmjl/pyjanitor](https://github.com/ericmjl/pyjanitor "https://github.com/ericmjl/pyjanitor").
+Additionally, development takes place on GitHub, at: [https://github.com/ericmjl/pyjanitor](https://github.com/ericmjl/pyjanitor).
 
 The reception to `pyjanitor` has been encouraging thus far. Newcomer contributors to open source have made their maiden contributions to `pyjanitor`, and experienced software engineers have also chipped in. More significant has been the contributions from data scientists seeking a cleaner API for cleaning data. There is a salient lesson here: with open source tools, savvy users can help steer
 development in a direction that they need.
@@ -140,7 +137,7 @@ New contributions are always welcome. The process for contributing is documented
 For domain-specific functions, we recommend that users either:
 
 1. Follow the programming idioms laid out in `pyjanitor` to build their own packages, or
-2. Make a contribution to an appropriate sub-namespace in pyjanitor, e.g. `pyjanitor.finance` or `pyjanitor.chemistry`, with a view towards breaking out the sub-namespace into its own package when matured.
+2. Make a contribution to an appropriate sub-namespace in pyjanitor, e.g. `pyjanitor.finance`, `pyjanitor.chemistry` or `pyjanitor.biology`, with a view towards breaking out the sub-namespace into its own package when matured.
 
 ## Comparison to other tools
 
