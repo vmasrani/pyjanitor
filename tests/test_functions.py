@@ -542,6 +542,14 @@ def test_add_column(dataframe):
     series.name = "fortytwo"
     pd.testing.assert_series_equal(df["fortytwo"], series)
 
+    # scalar values are correct for strings
+    # also, verify sanity check excludes strings, which have a length:
+
+    df = dataframe.add_column("fortythousand", "test string")
+    series = pd.Series(["test string"] * len(dataframe))
+    series.name = "fortythousand"
+    pd.testing.assert_series_equal(df["fortythousand"], series)
+
     # values are correct in dataframe for iterable
     vals = np.linspace(0, 43, len(dataframe))
     df = dataframe.add_column("fortythree", vals)
@@ -699,3 +707,25 @@ def test_transform_column(dataframe):
     expected = pd.Series(np.log10([1, 2, 3] * 3))
     expected.name = "a"
     pd.testing.assert_series_equal(df["a"], expected)
+
+
+def test_min_max_scale(dataframe):
+    df = dataframe.min_max_scale(col_name="a")
+    assert df["a"].min() == 0
+    assert df["a"].max() == 1
+
+
+def test_min_max_scale_custom_new_min_max(dataframe):
+    df = dataframe.min_max_scale(col_name="a", new_min=1, new_max=2)
+    assert df["a"].min() == 1
+    assert df["a"].max() == 2
+
+
+def test_min_max_old_min_max_errors(dataframe):
+    with pytest.raises(ValueError):
+        df = dataframe.min_max_scale(col_name="a", old_min=10, old_max=0)
+
+
+def test_min_max_new_min_max_errors(dataframe):
+    with pytest.raises(ValueError):
+        df = dataframe.min_max_scale(col_name="a", new_min=10, new_max=0)
