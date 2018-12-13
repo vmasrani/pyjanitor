@@ -6,7 +6,7 @@
 
 ## Abstract
 
-The `pandas` library has become the de facto library for data wrangling in the Python programming language. However, inconsistencies in the `pandas` application programming interface (API), while idiomatic due to historical use, prevent use of expressive, fluent programming idioms that enable self-documenting `pandas` code. Here, I introduce `pyjanitor`, an open source Python package that provides an API layer on top of the `pandas` API. `pyjanitor` makes heavy use of method chaining, prioritizing verbs as method names and arguments in the same style as the R package `dplyr`. This provides consistency in the API design, while also matching idioms that end-users would be accustomed to. Here, I also show a side-by-side comparison of code to accomplish the same data processing
+The `pandas` library has become the de facto library for data wrangling in the Python programming language. However, inconsistencies in the `pandas` application programming interface (API), while idiomatic due to historical use, prevent use of expressive, fluent programming idioms that enable self-documenting `pandas` code. Here, we introduce `pyjanitor`, an open source Python package that provides an API layer on top of the `pandas` API. `pyjanitor` makes heavy use of method chaining, prioritizing verbs as method names and arguments in the same style as the R package `dplyr`. This provides consistency in the API design, while also matching idioms that end-users would be accustomed to. Here, we also show a side-by-side comparison of code to accomplish the same data processing
 tasks, and outline generalizable principles for data processing API design.
 
 ## Introduction
@@ -43,7 +43,7 @@ import numpy as np
 
 df = pd.DataFrame(...)
 # standardize column names.
-df.columns =[i.lower().replace(' ', '_') for i in df.columns]
+df.columns =[i.lower().replace(' ', '_') for we in df.columns]
 # remove unnecessary columns
 del df['column_name_14']
 # transform a column by taking the log
@@ -75,7 +75,7 @@ This is the API design that `pyjanitor` aims to provide to `pandas` users. By us
 
 `pyjanitor` started as a Python port of the R package `janitor`, which is a data cleaning package for R users. The initial goal was to explicitly copy the `janitor` function names while engineering it to be compatible with `pandas` DataFrames, following Pythonic idioms, such as the method chaining provided by `pandas`. As the project evolved, the scope broadened, to provide a defined and expressive DSL for data processing, centered around the DataFrame object as a first-class citizen. In addition, “reverse ports” [^7] from `pyjanitor` back to `janitor` are strongly encouraged, to encourage sharing of good ideas that get developed across language barriers.
 
-[^7]: I am hesitant to call this a back port, because that would imply that `janitor` is an outdated tool. By no means is this so. Hence, a "reverse" port appears to be the most appropriate replacement name.
+[^7]: we am hesitant to call this a back port, because that would imply that `janitor` is an outdated tool. By no means is this so. Hence, a "reverse" port appears to be the most appropriate replacement name.
 
 ### Architecture
 
@@ -107,7 +107,7 @@ Thanks to the `pandas` `dataframe.query()` API, symbolic evaluations are nativel
 
 ### Design
 
-`pyjanitor` functions are named with verb expressions. This helps achieve the DSL-like nature of the API. Hence, if I want to “clean names”, the end user can call on the `.clean_names()` function; if the end user wants to “remove all empty rows and columns, they can call on `.remove_empty()`. As far as possible, function names are expressed using simple English verbs that are understandable cross-culturally, to ensure that this API is inclusive and accessible to the widest subset of users possible.
+Inspired by the `dplyr` world, `pyjanitor` functions are named with verb expressions. This helps achieve the DSL-like nature of the API. Hence, if we want to “clean names”, the end user can call on the `.clean_names()` function; if the end user wants to “remove all empty rows and columns, they can call on `.remove_empty()`. As far as possible, function names are expressed using simple English verbs that are understandable cross-culturally, to ensure that this API is inclusive and accessible to the widest subset of users possible. Where domain-specific verbs are used, we strive to match the mental models and vocabulary of domain experts.
 
 Keyword arguments are also likewise named with verb expressions. For example, if one wants to preserve and record the original column names before cleaning, one can add the `preserve_original` keyword argument to the `.clean_names` method:
 
@@ -127,8 +127,7 @@ Additionally, development takes place on GitHub, at: [https://github.com/ericmjl
 
 [repository]: https://github.com/ericmjl/pyjanitor
 
-The reception to `pyjanitor` has been encouraging thus far. Newcomer contributors to open source have made their maiden contributions to `pyjanitor`, and experienced software engineers have also chipped in. Contributions from data scientists seeking a cleaner API for cleaning data have also been welcome. There is a salient lesson here: with open source tools, savvy users can help steer
-development in a direction that they need.
+The reception to `pyjanitor` has been encouraging thus far. Newcomer contributors to open source have made their maiden contributions to `pyjanitor`, and experienced software engineers have also chipped in. Contributions from data scientists seeking a cleaner API for cleaning data have also been welcome. There is a salient lesson here: with open source tools, savvy users can help steer development in a direction that they need.
 
 As with most open source software development, maintenance and new feature development are entirely volunteer driven. Users are invited to post feature requests on the source repository issue tracker, but are more so invited to contribute an implementation themselves to share.
 
@@ -167,16 +166,16 @@ For domain-specific functions, we recommend that users either:
 
 ## Limitations of `pyjanitor`
 
-A minor technical limitation of `pyjanitor` is that it is still feature-incomplete. I anticipate that future maturation of `pyjanitor` through contributions from myself and the rest of the data science community will enable us to extend `pyjanitor`’s usage and scope, while remaining true to it being a general-purpose (and not domain-specific) data cleaning tool.
+A minor technical limitation of `pyjanitor` is that it is still feature-incomplete. we anticipate that future maturation of `pyjanitor` through contributions from myself and the rest of the data science community will enable us to extend `pyjanitor`’s usage and scope, while remaining true to it being a general-purpose (and not domain-specific) data cleaning tool.
 
 ## Extensions beyond `pyjanitor`
 
-`pyjanitor` does not aim to be the all-purpose data cleaning tool for all subject domains. Apart from providing generally useful data manipulation and cleaning routines, one can also think of it as a catalyst project for other specific domain applications. Following the verb-based grammar, one can imagine even more specific domain terms.
+`pyjanitor` does not aim to be the all-purpose data cleaning tool for all subject domains. Apart from providing a library of generally useful data manipulation and cleaning routines, one can also think of it as a catalyst project for other specific domain applications. Following the verb-based grammar, one can imagine even more specific domain terms.
 
 For example, one may imagine the creation of chemistry-oriented names, such as:
 
 - `smiles2mol(df, col_name)`: to convert a column of smiles into RDKit [^8] mol objects.
-- `mol2graph(df, col_name)`: to convert a column of mol objects into graph objects.
+- `mol2graph(df, col_name)`: to convert a column of mol objects into NetworkX graph objects.
 
 [^8]: https://www.rdkit.org/
 
@@ -184,11 +183,12 @@ Alternatively, one might imagine biology-oriented functions for commonly-used ta
 
 - `to_fasta(df, col_name, file_name)`: exporting a column of sequences to a FASTA file
 - `compute_length(df, col_name, length_colname)`: to compute the length of a column of sequences.
+- `join_fasta(df, file_name, id_col, col_name)`: create a column that contains the string representation of a biological sequence, by "joining" in a FASTA file, mapping the string to a particular column that already has the sequence identifiers in it.
 
-The general idea of calling on verb-based function names that method chain in a *fluent* fashion can be applied in multiple domains. `pyjanitor` is by no means the first application; it is my hope that this article inspires others to develop domain-specific tools using the same ideas.
+The general idea of calling on verb-based function names that method chain in a *fluent* fashion can be applied in multiple domains. `pyjanitor` is by no means the first application; it is our hope that this article inspires others to develop domain-specific tools using the same ideas.
 
 ## Acknowledgments
 
-I would like to thank the users who have made contributions to `pyjanitor`. These contributions have included documentation enhancements, bug fixes, development of tests, new functions, and new keyword arguments for functions. The list of contributors, which I anticipate will grow over time, can be found under `AUTHORS.rst` in the development repository.
+We would like to thank the users who have made contributions to `pyjanitor`. These contributions have included documentation enhancements, bug fixes, development of tests, new functions, and new keyword arguments for functions. The list of contributors, which we anticipate will grow over time, can be found under `AUTHORS.rst` in the development repository.
 
-I would also like to acknowledge Dr. Zachary Sailer, who developed `pandas-flavor`.
+We would also like to acknowledge Dr. Zachary Sailer, who developed `pandas-flavor`.
