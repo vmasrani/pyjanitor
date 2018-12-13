@@ -167,12 +167,14 @@ A minor technical limitation of `pyjanitor` is that it is still feature-incomple
 `pyjanitor` does not aim to be the all-purpose data cleaning tool for all subject domains. Apart from providing generally useful data manipulation and cleaning routines, one can also think of it as a catalyst project for other specific domain applications. Following the verb-based grammar, one can imagine even more specific domain terms.
 
 For example, one may imagine the creation of chemistry-oriented names, such as:
+
 - `smiles2mol(df, col_name)`: to convert a column of smiles into RDKit [^8] mol objects.
 - `mol2graph(df, col_name)`: to convert a column of mol objects into graph objects.
 
 [^8]: https://www.rdkit.org/
 
 Alternatively, one might imagine biology-oriented functions for commonly-used tasks, such as:
+
 - `to_fasta(df, col_name, file_name)`: exporting a column of sequences to a FASTA file
 - `compute_length(df, col_name, length_colname)`: to compute the length of a column of sequences.
 
@@ -184,6 +186,6 @@ I would like to thank the users who have made contributions to `pyjanitor`. Thes
 
 I would also like to acknowledge Dr. Zachary Sailer, who developed `pandas-flavor`.
 
-[3]:	https://github.com/sfirke/janitor
-[4]:	https://github.com/coursera/pandas-ply
-[5]:	https://github.com/dodger487/dplython
+[3]: https://github.com/sfirke/janitor
+[4]: https://github.com/coursera/pandas-ply
+[5]: https://github.com/dodger487/dplython
