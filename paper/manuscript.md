@@ -119,13 +119,13 @@ As show in the code block example above, other keyword arguments that have been 
 
 ### Documentation and Development
 
-API Documentation for `pyjanitor` is available on ReadTheDocs, at [https://pyjanitor.readthedocs.io/][1].
+API Documentation for `pyjanitor` is available on ReadTheDocs, at [https://pyjanitor.readthedocs.io/][docs].
 
-[1]: https://pyjanitor.readthedocs.io/
+[docs]: https://pyjanitor.readthedocs.io/
 
-Additionally, development takes place on GitHub, at: [https://github.com/ericmjl/pyjanitor][2].
+Additionally, development takes place on GitHub, at: [https://github.com/ericmjl/pyjanitor][repository].
 
-[2]: https://github.com/ericmjl/pyjanitor
+[repository]: https://github.com/ericmjl/pyjanitor
 
 The reception to `pyjanitor` has been encouraging thus far. Newcomer contributors to open source have made their maiden contributions to `pyjanitor`, and experienced software engineers have also chipped in. Contributions from data scientists seeking a cleaner API for cleaning data have also been welcome. There is a salient lesson here: with open source tools, savvy users can help steer
 development in a direction that they need.
@@ -148,15 +148,22 @@ For domain-specific functions, we recommend that users either:
 
 ## Comparison to other tools
 
-**`janitor`**: This is the original source of inspiration for `pyjanitor`, and the original creator of `janitor` is aware of `pyjanitor`’s existence. A number of function names in `janitor` have been directly copied over to `pyjanitor` and re-implemented in a `pandas`-compatible syntax. R-janitor can be found at [https://github.com/sfirke/janitor][3]
+**`janitor`**: This is the original source of inspiration for `pyjanitor`, and the original creator of `janitor` is aware of `pyjanitor`’s existence. A number of function names in `janitor` have been directly copied over to `pyjanitor` and re-implemented in a `pandas`-compatible syntax. R-janitor can be found at [https://github.com/sfirke/janitor][r-janitor]
 
+[r-janitor]: https://github.com/sfirke/janitor
 **`dplyr`**: The `dplyr` R package can be considered as “the originator” for verb-based data processing syntax. `janitor` extends `dplyr`. It is available for use by Python users through `rpy2`; however, its primary usage audience is R users.
 
-**`pandas-ply`**: This is a tool developed by Coursera, and aims to provide the `dplyr`syntax to `pandas` users. One advantage that it has over `pyjanitor` is that symbolic expressions can be used inside functions, which automatically get parsed into an appropriate lambda function in Python.  However, the number of verbs available is restricted to the `dplyr` set. As of 24 November 2018, development was last seen 3 years ago. `pandas-ply` can be found at[https://github.com/coursera/pandas-ply][4]
+**`pandas-ply`**: This is a tool developed by Coursera, and aims to provide the `dplyr`syntax to `pandas` users. One advantage that it has over `pyjanitor` is that symbolic expressions can be used inside functions, which automatically get parsed into an appropriate lambda function in Python.  However, the number of verbs available is restricted to the `dplyr` set. As of 24 November 2018, development was last seen 3 years ago. `pandas-ply` can be found at[https://github.com/coursera/pandas-ply][pandas-ply]
 
-**`dplython`**:  Analogous to `pandas-ply`, `dplython` also aims to provide the `dplyr` syntax to `pandas` users. Development was last seen 2 years ago. `dplython` can be found at [https://github.com/dodger487/dplython][5]
+[pandas-ply]: https://github.com/coursera/pandas-ply
 
-**`dfply`**: This is the most actively-developed, pandas-compatible `dplyr` port. Its emphasis is on porting over the piping syntax to the pandas world. From our study of its source code, in principle, every function there can be wrapped with `pandas-flavor`'s `pf.register_dataframe_method` decorator, thus bringing the most feature-complete implementation of `dplyr` verbs to the `pandas` world. Whether the developers are interested in this is a matter to be discussed.
+**`dplython`**:  Analogous to `pandas-ply`, `dplython` also aims to provide the `dplyr` syntax to `pandas` users. Development was last seen 2 years ago. `dplython` can be found at [https://github.com/dodger487/dplython][dplython]
+
+[dplython]: https://github.com/dodger487/dplython
+
+**`dfply`**: This is the most actively-developed, pandas-compatible `dplyr` port. Its emphasis is on porting over the piping syntax to the pandas world. From our study of its source code, in principle, every function there can be wrapped with `pandas-flavor`'s `pf.register_dataframe_method` decorator, thus bringing the most feature-complete implementation of `dplyr` verbs to the `pandas` world. Whether the developers are interested in this is a matter to be discussed. `dfply` can be found at [https://github.com/kieferk/dfply][dfply]
+
+[dfply]: https://github.com/kieferk/dfply
 
 ## Limitations of `pyjanitor`
 
@@ -185,7 +192,3 @@ The general idea of calling on verb-based function names that method chain in a 
 I would like to thank the users who have made contributions to `pyjanitor`. These contributions have included documentation enhancements, bug fixes, development of tests, new functions, and new keyword arguments for functions. The list of contributors, which I anticipate will grow over time, can be found under `AUTHORS.rst` in the development repository.
 
 I would also like to acknowledge Dr. Zachary Sailer, who developed `pandas-flavor`.
-
-[3]: https://github.com/sfirke/janitor
-[4]: https://github.com/coursera/pandas-ply
-[5]: https://github.com/dodger487/dplython
