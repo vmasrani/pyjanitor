@@ -1,6 +1,5 @@
 """
 pyjanitor functions.
-
 New data cleaning functions should be implemented here.
 """
 import datetime as dt
@@ -22,7 +21,6 @@ from typing import List, Union
 def _strip_underscores(df, strip_underscores=None):
     """
     Strip underscores from DataFrames column names.
-
     Underscores can be stripped from the beginning, end or both.
 
     .. code-block:: python
@@ -140,7 +138,7 @@ def clean_names(
 
     # Store the original column names, if enabled by user
     if preserve_original_columns:
-        df.__dict__['original_columns'] = original_column_names
+        df.__dict__["original_columns"] = original_column_names
     return df
 
 
@@ -168,6 +166,7 @@ def remove_empty(df):
         df = pd.DataFrame(...).remove_empty()
 
     :param df: The pandas DataFrame object.
+
     :returns: A pandas DataFrame.
     """
     nanrows = df.index[df.isnull().all(axis=1)]
@@ -188,7 +187,8 @@ def get_dupes(df, columns=None):
 
     .. code-block:: python
 
-        get_dupes(df)
+        df = pd.DataFrame(...)
+        df = get_dupes(df)
 
     Method chaining example:
 
@@ -306,12 +306,11 @@ def get_features_targets(df, target_columns, feature_columns=None):
     Get the features and targets as separate DataFrames/Series.
 
     The behaviour is as such:
-
     - `target_columns` is mandatory.
     - If `feature_columns` is present, then we will respect the column names
-      inside there.
+    inside there.
     - If `feature_columns` is not passed in, then we will assume that the
-      rest of the columns are feature columns, and return them.
+    rest of the columns are feature columns, and return them.
 
     Functional usage example:
 
@@ -389,7 +388,9 @@ def reorder_columns(
 ) -> pd.DataFrame:
     """
     Reorder DataFrame columns by specifying desired order as list of col names
-    Columns not specified retain their order and follow after specified cols
+
+    Columns not specified retain their order and follow after specified cols.
+
     Validates column_order to ensure columns are all present in DataFrame.
 
     Functional usage example:
@@ -441,6 +442,7 @@ def reorder_columns(
 @pf.register_dataframe_method
 def coalesce(df, columns, new_column_name):
     """
+
     Coalesces two or more columns of data in order of column names provided.
 
     Functional usage example:
@@ -456,7 +458,6 @@ def coalesce(df, columns, new_column_name):
         import pandas as pd
         import janitor
         df = pd.DataFrame(...).coalesce(['col1', 'col2'])
-
 
     The result of this function is that we take the first non-null value across
     rows.
@@ -741,7 +742,11 @@ def filter_string(
     :param complement: Whether to return the complement of the filter or not.
     """
     criteria = df[column].str.contains(search_string)
-    return filter_on(df, criteria, complement=complement)
+    # return filter_on(df, criteria, complement=complement)
+    if complement:
+        return df[~criteria]
+    else:
+        return df[criteria]
 
 
 @pf.register_dataframe_method
@@ -754,7 +759,7 @@ def filter_on(df, criteria, complement=False):
     .. code-block:: python
 
         df = (pd.DataFrame(...)
-              .filter_on(df['value'] < 3, complement=False)
+              .filter_on('value < 3', complement=False)
               ...)  # chain on more data preprocessing.
 
     This stands in contrast to the in-place syntax that is usually used:
@@ -772,16 +777,15 @@ def filter_on(df, criteria, complement=False):
     .. code-block:: python
 
         df = filter_on(df,
-                           df['value'] < 3,
-                           complement=False)
+                       'value < 3',
+                       complement=False)
 
     Method chaining example:
 
     .. code-block:: python
 
         df = (pd.DataFrame(...)
-              .filter_on(df['value'] < 3
-                             complement=False)
+              .filter_on('value < 3', complement=False)
               ...)
 
     Credit to Brant Peterson for the name.
@@ -792,9 +796,9 @@ def filter_on(df, criteria, complement=False):
     :param complement: Whether to return the complement of the filter or not.
     """
     if complement:
-        return df[~criteria]
+        return df.query("not " + criteria)
     else:
-        return df[criteria]
+        return df.query(criteria)
 
 
 @pf.register_dataframe_method
@@ -875,15 +879,12 @@ def add_column(df, col_name: str, value, fill_remaining: bool = False):
         the number of rows in the DataFrame, repeat the list or tuple
         (R-style) to the end of the DataFrame.
 
-
     :Setup:
 
     .. code-block:: python
 
         import pandas as pd
         import janitor
-
-
         data = {
             "a": [1, 2, 3] * 3,
             "Bell__Chart": [1, 2, 3] * 3,
@@ -891,17 +892,13 @@ def add_column(df, col_name: str, value, fill_remaining: bool = False):
             "animals": ["rabbit", "leopard", "lion"] * 3,
             "cities": ["Cambridge", "Shanghai", "Basel"] * 3,
         }
-
         df = pd.DataFrame(data)
 
-
     :Example 1: Create a new column with a single value:
-
 
     .. code-block:: python
 
         df.add_column("city_pop", 100000)
-
 
     :Output:
 
@@ -960,7 +957,6 @@ def add_column(df, col_name: str, value, fill_remaining: bool = False):
         6  1            1                   1   rabbit  Cambridge        -1
         7  2            2                   2  leopard   Shanghai        -2
         8  3            3                   3     lion      Basel        -3
-
     """
 
     check("col_name", col_name, [str])
@@ -1024,7 +1020,6 @@ def add_columns(df: pd.DataFrame, fill_remaining: bool = False, **kwargs):
 
         x = 3
         y = np.arange(0, 10)
-
         df = pd.DataFrame(...).add_columns(x=x, y=y)
 
     :param df: A pandas dataframe.
@@ -1070,7 +1065,6 @@ def limit_column_characters(df, column_length: int, col_separator: str = "_"):
 
         import pandas as pd
         import janitor
-
         data_dict = {
             "really_long_name_for_a_column": range(10),
             "another_really_long_name_for_a_column": \
@@ -1079,7 +1073,7 @@ def limit_column_characters(df, column_length: int, col_separator: str = "_"):
             "this_is_getting_out_of_hand": list("longername"),
         }
 
-    :Example 1: Standard truncation:
+    :Example: Standard truncation:
 
     .. code-block:: python
 
@@ -1102,7 +1096,7 @@ def limit_column_characters(df, column_length: int, col_separator: str = "_"):
         8        8       16         m       m
         9        9       18         e       e
 
-    :Example 2: Standard truncation with different separator character:
+    :Example: Standard truncation with different separator character:
 
     .. code-block:: python
 
@@ -1122,7 +1116,6 @@ def limit_column_characters(df, column_length: int, col_separator: str = "_"):
         7        7       14         a       a
         8        8       16         m       m
         9        9       18         e       e
-
     """
 
     check("column_length", column_length, [int])
@@ -1168,9 +1161,10 @@ def row_to_names(
     remove_rows_above: bool = False,
 ):
     """
-    Elevates a row to be the column names of a DataFrame. Contains options to
-    remove the elevated row from the DataFrame along with removing the rows
-    above the selected row.
+    Elevates a row to be the column names of a DataFrame.
+
+    Contains options to remove the elevated row from the DataFrame along with
+    removing the rows above the selected row.
 
     :param df: A pandas DataFrame.
     :param row_number: The row containing the variable names
@@ -1185,7 +1179,6 @@ def row_to_names(
 
         import pandas as pd
         import janitor
-
         data_dict = {
             "a": [1, 2, 3] * 3,
             "Bell__Chart": [1, 2, 3] * 3,
@@ -1194,7 +1187,7 @@ def row_to_names(
             "cities": ["Cambridge", "Shanghai", "Basel"] * 3
         }
 
-    :Example 1: Move first row to column names:
+    :Example: Move first row to column names:
 
     .. code-block:: python
 
@@ -1215,7 +1208,7 @@ def row_to_names(
         6  1  1  1   rabbit  Cambridge
         7  2  2  2  leopard   Shanghai
 
-    :Example 2: Move first row to column names and remove row:
+    :Example: Move first row to column names and remove row:
 
     .. code-block:: python
 
@@ -1236,7 +1229,7 @@ def row_to_names(
         7  2  2  2  leopard   Shanghai
         8  3  3  3     lion      Basel
 
-    :Example 3: Move first row to column names, remove row, \
+    :Example: Move first row to column names, remove row, \
     and remove rows above selected row:
 
     .. code-block:: python
@@ -1256,8 +1249,6 @@ def row_to_names(
         6  1  1  1   rabbit  Cambridge
         7  2  2  2  leopard   Shanghai
         8  3  3  3     lion      Basel
-
-
     """
 
     check("row_number", row_number, [int])
@@ -1280,6 +1271,7 @@ def round_to_fraction(
 ):
     """
     Round all values in a column to a fraction.
+
     Also, optionally round to a specified number of digits.
 
     :param number: The number to round
@@ -1295,7 +1287,6 @@ def round_to_fraction(
 
         import pandas as pd
         import janitor
-
         data_dict = {
             "a": [1.23452345, 2.456234, 3.2346125] * 3,
             "Bell__Chart": [1/3, 2/7, 3/2] * 3,
@@ -1304,8 +1295,7 @@ def round_to_fraction(
             "cities": ["Cambridge", "Shanghai", "Basel"] * 3,
         }
 
-
-    :Example 1: Rounding the first column to the nearest half:
+    :Example: Rounding the first column to the nearest half:
 
     .. code-block:: python
 
@@ -1327,7 +1317,7 @@ def round_to_fraction(
         7  2.5     0.285714            0.153846  leopard   Shanghai
         8  3.0     1.500000            0.017964     lion      Basel
 
-    :Example 2: Rounding the first column to nearest third:
+    :Example: Rounding the first column to nearest third:
 
     .. code-block:: python
 
@@ -1371,8 +1361,6 @@ def round_to_fraction(
         6  1.3333     0.333333            0.004274   rabbit  Cambridge
         7  2.3333     0.285714            0.153846  leopard   Shanghai
         8  3.3333     1.500000            0.017964     lion      Basel
-
-
     """
 
     check("col_name", col_name, [str])
@@ -1399,11 +1387,12 @@ def round_to_fraction(
 
 
 @pf.register_dataframe_method
-def transform_column(df, col_name: str, function):
+def transform_column(df, col_name: str, function, dest_col_name: str = None):
     """
     Transforms the given column in-place using the provided function.
 
     Let's say we wanted to apply a log10 transform a column of data.
+
     Originally one would write code like this:
 
     .. code-block:: python
@@ -1417,7 +1406,7 @@ def transform_column(df, col_name: str, function):
 
         df = (
             pd.DataFrame(...)
-            .transform(col_name, function)
+            .transform_column(col_name, function)
         )
 
     With the functional syntax:
@@ -1425,14 +1414,19 @@ def transform_column(df, col_name: str, function):
     .. code-block:: python
 
         df = pd.DataFrame(...)
-        df = transform(df, col_name, function)
+        df = transform_column(df, col_name, function)
 
     :param df: A pandas DataFrame.
     :param col_name: The column to transform.
     :param function: A function to apply on the column.
+    :param dest_col_name: The column name to store the transformation result
+        in. By default, replaces contents of original column.
     """
 
-    df[col_name] = df[col_name].apply(function)
+    if dest_col_name is None:
+        dest_col_name = col_name
+
+    df[dest_col_name] = df[col_name].apply(function)
     return df
 
 
@@ -1450,6 +1444,7 @@ def min_max_scale(
     One can optionally set a new target minimum and maximum value using the
     `new_min` and `new_max` keyword arguments. This will result in the
     transformed data being bounded between `new_min` and `new_max`.
+
     If a particular column name is specified, then only that column of data
     are scaled. Otherwise, the entire dataframe is scaled.
 
@@ -1500,7 +1495,6 @@ def min_max_scale(
         data after it has been scaled.
     :param col_name (optional): The column on which to perform scaling.
     :returns: df
-
     """
     if (
         (old_min is not None)
@@ -1533,11 +1527,113 @@ def min_max_scale(
     return df
 
 
+@pf.register_dataframe_method
+def collapse_levels(df: pd.DataFrame, sep: str = "_"):
+    """
+    Given a `DataFrame` containing multi-level columns, flatten to single-
+    level by string-joining the column labels in each level.
+
+    After a `groupby` / `aggregate` operation where `.agg()` is passed a
+    list of multiple aggregation functions, a multi-level `DataFrame` is
+    returned with the name of the function applied in the second level.
+
+    It is sometimes convenient for later indexing to flatten out this
+    multi-level configuration back into a single level. This function does
+    this through a simple string-joining of all the names across different
+    levels in a single column.
+
+    Method chaining example given two value columns `['var1', 'var2']`:
+
+    .. code-block:: python
+
+        df = (
+            pd.DataFrame(...)
+            .groupby('mygroup')
+            .agg(['mean', 'median'])
+            .collapse_levels(sep='_')
+        )
+
+    Before applying `.collapse_levels`, the `.agg` operation returns a
+    multi-level column `DataFrame` whose columns are (level 1, level 2):
+    `[('mygroup', ''), ('var1', 'mean'), ('var1', 'median'), ('var2', 'mean'),
+    ('var2', 'median')]`
+    `.collapse_levels` then flattens the column names to:
+    `['mygroup', 'var1_mean', 'var1_median', 'var2_mean', 'var2_median']`
+
+    :param df: A pandas DataFrame.
+    :param sep: String separator used to join the column level names
+    :returns: df
+    """
+
+    check("sep", sep, [str])
+
+    # if already single-level, just return the DataFrame
+    if not isinstance(df.columns.values[0], tuple):
+        return df
+
+    df.columns = [
+        sep.join([str(el) for el in tup if str(el) != ""])
+        for tup in df.columns.values
+    ]
+    return df
+
+
+@pf.register_dataframe_method
+def reset_index_inplace(df: pd.DataFrame, *args, **kwargs):
+    """
+    Returns the dataframe with an inplace resetting of the index.
+
+    Compared to non-inplace resetting, this avoids data copying, thus
+    providing a potential speedup.
+
+    In Pandas, `reset_index()`, when used in place, does not return a
+    `DataFrame`, preventing this option's usage in the function-chaining
+    scheme. `reset_index_inplace()` provides one the ability to save
+    computation time and memory while still being able to use the chaining
+    syntax core to pyjanitor. This function, therefore, is the chaining
+    equivalent of:
+
+    .. code-block:: python
+
+        df = (
+            pd.DataFrame(...)
+            .operation1(...)
+        )
+
+        df.reset_index(inplace=True)
+
+        df = df.operation2(...)
+
+    instead, being called simply as:
+
+    .. code-block:: python
+
+        df = (
+            pd.DataFrame(...)
+            .operation1(...)
+            .reset_index_inplace()
+            .operation2(...)
+        )
+
+    All supplied parameters are sent directly to `DataFrame.reset_index()`.
+
+    :param df: A pandas DataFrame.
+    :param args: Arguments supplied to `DataFrame.reset_index()`
+    :param kwargs: Arguments supplied to `DataFrame.reset_index()`
+    :returns: df
+    """
+
+    kwargs.update(inplace=True)
+
+    df.reset_index(*args, **kwargs)
+    return df
+
+
 def check(varname: str, value, expected_types: list):
     """
     One-liner syntactic sugar for checking types.
 
-    Should be used like this:
+    Should be used like this::
 
         check('x', x, [int, float])
 
