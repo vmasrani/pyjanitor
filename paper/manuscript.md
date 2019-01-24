@@ -196,3 +196,13 @@ The general idea of calling on verb-based function names that method chain in a 
 We would like to thank the users who have made contributions to `pyjanitor`. These contributions have included documentation enhancements, bug fixes, development of tests, new functions, and new keyword arguments for functions. The list of contributors, which we anticipate will grow over time, can be found under `AUTHORS.rst` in the development repository.
 
 We would also like to acknowledge Dr. Zachary Sailer, who developed `pandas-flavor`.
+
+## Author Contributions
+
+EJM is the lead developer of `pyjanitor`, and spearheaded the creation of the first versions of it.
+
+SZ and ZB have contributed multiple functions to the package, and have provided architectural modifications.
+
+ZS is the creator of pandas_flavor, which enabled the development of pyjanitor.
+
+EJG helped tremendously with structuring and editing the manuscript, and has raised feature requests based on real-world usage.
