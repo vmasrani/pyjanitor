@@ -176,6 +176,18 @@ For domain-specific functions, we recommend that users either:
 
 [dfply]: https://github.com/kieferk/dfply
 
+**`plydata`**:
+
+[plydata]: https://github.com/has2k1/plydata
+
+**`kadro`**:
+
+[kadro]: https://github.com/koaning/kadro
+
+**`pdpipe`**:
+
+[pdpipe]: https://github.com/shaypal5/pdpipe
+
 ## Limitations of `pyjanitor`
 
 A minor technical limitation of `pyjanitor` is that it is still feature-incomplete. we anticipate that future maturation of `pyjanitor` through contributions from myself and the rest of the data science community will enable us to extend `pyjanitor`’s usage and scope, while remaining true to it being a general-purpose (and not domain-specific) data cleaning tool.
