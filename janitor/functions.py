@@ -1,21 +1,18 @@
 """
-pyjanitor functions.
-New data cleaning functions should be implemented here.
+General purpose data cleaning functions.
 """
 import datetime as dt
 import re
-from functools import reduce
-from functools import partial
-from warnings import warn
+from functools import partial, reduce
+from typing import List, Union
 
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pandas_flavor as pf
+from scipy.stats import mode
 from sklearn.preprocessing import LabelEncoder
 
-import pandas_flavor as pf
-
 from .errors import JanitorError
-from typing import List, Union
 
 
 def _strip_underscores(df, strip_underscores=None):
@@ -516,6 +513,42 @@ def convert_excel_date(df, column):
 
 
 @pf.register_dataframe_method
+def convert_matlab_date(df, column):
+    """
+    Convert Matlab's serial date number into Python datetime format.
+
+    Implementation is also from `Stack Overflow`.
+
+    .. _Stack Overflow: https://stackoverflow.com/questions/13965740/converting-matlabs-datenum-format-to-python  # noqa: E501
+
+    Functional usage example:
+
+    .. code-block:: python
+
+        df = convert_matlab_date(df, column='date')
+
+    Method chaining example:
+
+    .. code-block:: python
+
+        import pandas as pd
+        import janitor
+        df = pd.DataFrame(...).convert_matlab_date('date')
+
+    :param df: A pandas DataFrame.
+    :param str column: A column name.
+    :returns: A pandas DataFrame with corrected dates.
+    """
+    days = pd.Series([dt.timedelta(v % 1) for v in df[column]])
+    df[column] = (
+        df[column].astype(int).apply(dt.datetime.fromordinal)
+        + days
+        - dt.timedelta(days=366)
+    )
+    return df
+
+
+@pf.register_dataframe_method
 def fill_empty(df, columns, value):
     """
     Fill `NaN` values in specified columns with a given value.
@@ -546,16 +579,12 @@ def fill_empty(df, columns, value):
         for col in columns:
             assert (
                 col in df.columns
-            ), "{col} missing from dataframe columns!".format(
-                col=col
-            )
+            ), "{col} missing from dataframe columns!".format(col=col)
             df[col] = df[col].fillna(value)
     else:
         assert (
             columns in df.columns
-        ), "{col} missing from dataframe columns!".format(
-            col=columns
-        )
+        ), "{col} missing from dataframe columns!".format(col=columns)
         df[columns] = df[columns].fillna(value)
 
     return df
@@ -692,7 +721,7 @@ def filter_string(
     """
     Filter a string-based column according to whether it contains a substring.
 
-    This is super sugary syntax that builds on top of `filter_on` and
+    This is super sugary syntax that builds on top of
     `pandas.Series.str.contains`.
 
     Because this uses internally `pandas.Series.str.contains`, which allows a
@@ -742,7 +771,6 @@ def filter_string(
     :param complement: Whether to return the complement of the filter or not.
     """
     criteria = df[column].str.contains(search_string)
-    # return filter_on(df, criteria, complement=complement)
     if complement:
         return df[~criteria]
     else:
@@ -754,12 +782,19 @@ def filter_on(df, criteria, complement=False):
     """
     Return a dataframe filtered on a particular criteria.
 
-    This function allows us to method chain filtering operations:
+    This is super-sugary syntax that wraps the pandas `.query()` API, enabling
+    users to use strings to quickly specify filters for filtering their
+    dataframe. The intent is that `filter_on` as a verb better matches the
+    intent of a pandas user than the verb `query`.
+
+    Let's say we wanted to filter students based on whether they failed an exam
+    or not, which is defined as their score (in the "score" column) being less
+    than 50.
 
     .. code-block:: python
 
         df = (pd.DataFrame(...)
-              .filter_on('value < 3', complement=False)
+              .filter_on('score < 50', complement=False)
               ...)  # chain on more data preprocessing.
 
     This stands in contrast to the in-place syntax that is usually used:
@@ -767,7 +802,7 @@ def filter_on(df, criteria, complement=False):
     .. code-block:: python
 
         df = pd.DataFrame(...)
-        df = df[df['value'] < 3]
+        df = df[df['score'] < 3]
 
     As with the `filter_string` function, a more seamless flow can be expressed
     in the code.
@@ -777,7 +812,7 @@ def filter_on(df, criteria, complement=False):
     .. code-block:: python
 
         df = filter_on(df,
-                       'value < 3',
+                       'score < 50',
                        complement=False)
 
     Method chaining example:
@@ -785,7 +820,7 @@ def filter_on(df, criteria, complement=False):
     .. code-block:: python
 
         df = (pd.DataFrame(...)
-              .filter_on('value < 3', complement=False)
+              .filter_on('score < 50', complement=False)
               ...)
 
     Credit to Brant Peterson for the name.
@@ -1653,3 +1688,110 @@ def check(varname: str, value, expected_types: list):
                 varname=varname, expected_types=expected_types
             )
         )
+
+
+@pf.register_dataframe_method
+def select_columns(df: pd.DataFrame, columns: List, invert: bool = False):
+    """
+    Method-chainable selection of columns.
+
+    Optional ability to invert selection of columns available as well.
+
+    Method-chaining example:
+
+    ..code-block:: python
+
+        df = pd.DataFrame(...).select_columns(['a', 'b', 'c'], invert=True)
+
+    :param df: A pandas DataFrame.
+    :param columns: A list of columns to select.
+    :param invert: Whether or not to invert the selection.
+        This will result in selection ofthe complement of the columns provided.
+    :returns: A pandas DataFrame with the columns selected.
+    """
+
+    if invert:
+
+        return df.drop(columns=columns)
+
+    else:
+        return df[columns]
+
+
+@pf.register_dataframe_method
+def impute(df, column: str, value=None, statistic=None):
+    """
+    Method-chainable imputation of values in a column.
+
+    Underneath the hood, this function calls the `.fillna()` method available
+    to every pandas.Series object.
+
+    Method-chaining example:
+
+    ..code-block:: python
+
+        df = (
+            pd.DataFrame(...)
+            # Impute null values with 0
+            .impute(column='sales', value=0.0)
+            # Impute null values with median
+            .impute(column='score', statistic='median')
+        )
+
+    Either one of ``value`` or ``statistic`` should be provided.
+
+    If ``value`` is provided, then all null values in the selected column will
+        take on the value provided.
+
+    If ``statistic`` is provided, then all null values in the selected column
+    will take on the summary statistic value of other non-null values.
+
+    Currently supported ``statistic``s include:
+
+    - ``mean`` (also aliased by ``average``)
+    - ``median``
+    - ``mode``
+    - ``minimum`` (also aliased by ``min``)
+    - ``maximum`` (also aliased by ``max``)
+
+    :param df: A pandas DataFrame
+    :param column: The name of the column on which to impute values.
+    :param value: (optional) The value to impute.
+    :param statistic: (optional) The column statistic to impute.
+    """
+
+    # Firstly, we check that only one of `value` or `statistic` are provided.
+    if value is not None and statistic is not None:
+        raise ValueError(
+            "Only one of `value` or `statistic` should be provided"
+        )
+
+    # If statistic is provided, then we compute the relevant summary statistic
+    # from the other data.
+    funcs = {
+        "mean": np.mean,
+        "average": np.mean,  # aliased
+        "median": np.median,
+        "mode": mode,
+        "minimum": np.min,
+        "min": np.min,  # aliased
+        "maximum": np.max,
+        "max": np.max,  # aliased
+    }
+    if statistic is not None:
+        # Check that the statistic keyword argument is one of the approved.
+        if statistic not in funcs.keys():
+            raise KeyError(f"`statistic` must be one of {funcs.keys()}")
+
+        value = funcs[statistic](df[column].dropna().values)
+        # special treatment for mode, because scipy stats mode returns a
+        # moderesult object.
+        if statistic is "mode":
+            value = value.mode[0]
+
+    # The code is architected this way - if `value` is not provided but
+    # statistic is, we then overwrite the None value taken on by `value`, and
+    # use it to set the imputation column.
+    if value is not None:
+        df[column] = df[column].fillna(value)
+    return df
