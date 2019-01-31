@@ -52,7 +52,7 @@ import numpy as np
 
 df = pd.DataFrame(...)
 # standardize column names.
-df.columns =[i.lower().replace(' ', '_') for we in df.columns]
+df.columns = [i.lower().replace(' ', '_') for we in df.columns]
 # remove unnecessary columns
 del df['column_name_14']
 # transform a column by taking the log
