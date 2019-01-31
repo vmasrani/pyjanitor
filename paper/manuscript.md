@@ -3,9 +3,9 @@
 ## Authors
 
 - Eric J Ma
-- Zachary Barry (?)
-- Sam Zuckerman (?)
-- Zachary Sailer (?)
+- Zachary Barry
+- Sam Zuckerman
+- Zachary Sailer
 - Eli J. Goldberg (?)
 
 ## Abstract
