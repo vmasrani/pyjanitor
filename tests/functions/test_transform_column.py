@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
+import pytest
 
-from janitor.testing_utils.fixtures import dataframe
 
-
+@pytest.mark.functions
 def test_transform_column(dataframe):
     # replacing the data of the original column
 
@@ -13,6 +13,7 @@ def test_transform_column(dataframe):
     pd.testing.assert_series_equal(df["a"], expected)
 
 
+@pytest.mark.functions
 def test_transform_column_with_dest(dataframe):
     # creating a new destination column
 
