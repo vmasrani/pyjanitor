@@ -36,7 +36,7 @@ bibliography: references.bib
 
 The `pandas` library has become the de facto library for data wrangling in the Python programming language. However, inconsistencies in the `pandas` application programming interface (API), while idiomatic due to historical use, prevent use of expressive, fluent programming idioms that enable self-documenting `pandas` code. Here, we introduce `pyjanitor`, an open source Python package that provides a fluent API layer on top of the pandas API, enabling data scientists and engineers to write readable, self-documenting and maintainable code.
 
-`pyjanitor` started originally as a Python port of the R package. However, as the project evolved, we recognized the power of a fluent API through method chaining when doing data preparation work.
+`pyjanitor` started originally as a Python port of the R package. However, as the project evolved, we recognized the power of a fluent API through method chaining when doing data preparation work. As such, `pyjanitor` users can design easily
 
 ``Gala`` is an Astropy-affiliated Python package for galactic dynamics. Python
 enables wrapping low-level languages (e.g., C) for speed without losing
