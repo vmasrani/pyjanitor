@@ -36,40 +36,34 @@ bibliography: references.bib
 
 The `pandas` library has become the de facto library for data wrangling in the Python programming language. However, inconsistencies in the `pandas` application programming interface (API), while idiomatic due to historical use, prevent use of expressive, fluent programming idioms that enable self-documenting `pandas` code. Here, we introduce `pyjanitor`, an open source Python package that provides a fluent API layer on top of the pandas API, enabling data scientists and engineers to write readable, self-documenting and maintainable code.
 
-`pyjanitor` started originally as a Python port of the R package. However, as the project evolved, we recognized the power of a fluent API through method chaining when doing data preparation work. As such, `pyjanitor` users can design easily
+`pyjanitor` started originally as a Python port of the R package. However, as the project evolved, we recognized that a fluent API through method chaining when doing data preparation work could enhance the readability of code. We believe the following example adequately expresses why `pyjanitor` is a usability and code maintainability improvement over native `pandas` syntax. To perform a three-step data cleaning routine involving cleaning column names, transforming a column, and selecting a subset of columns, with `pyjanitor`, one would write:
 
-``Gala`` is an Astropy-affiliated Python package for galactic dynamics. Python
-enables wrapping low-level languages (e.g., C) for speed without losing
-flexibility or ease-of-use in the user-interface. The API for ``Gala`` was
-designed to provide a class-based and user-friendly interface to fast (C or
-Cython-optimized) implementations of common operations such as gravitational
-potential and force evaluation, orbit integration, dynamical transformations,
-and chaos indicators for nonlinear dynamics. ``Gala`` also relies heavily on and
-interfaces well with the implementations of physical units and astronomical
-coordinate systems in the ``Astropy`` package [@astropy] (``astropy.units`` and
-``astropy.coordinates``).
+```python
+import pandas as pd
+import numpy as np
 
-``Gala`` was designed to be used by both astronomical researchers and by
-students in courses on gravitational dynamics or astronomy. It has already been
-used in a number of scientific publications [@Pearson:2017] and has also been
-used in graduate courses on Galactic dynamics to, e.g., provide interactive
-visualizations of textbook material [@Binney:2008]. The combination of speed,
-design, and support for Astropy functionality in ``Gala`` will enable exciting
-scientific explorations of forthcoming data releases from the *Gaia* mission
-[@gaia] by students and experts alike. The source code for ``Gala`` has been
-archived to Zenodo with the linked DOI: [@zenodo]
+df = (
+    pd.DataFrame(...)
+    .clean_names()
+    .transform_column('readout', np.log10, 'readout_log10')
+    .select_columns(['id', 'readout'])
+)
+```
 
-# Mathematics
+This stands in contrast to original `pandas` syntax:
 
-Single dollars ($) are required for inline mathematics e.g. $f(x) = e^{\pi/x}$
+```python
+import pandas as pd
+import numpy as np
+from pyjanitor import clean_names
 
-Double dollars make self-standing equations:
+df = pd.DataFrame()
+df.columns = [clean_names(x) for x in df.columns]
+df['readout_log10'] = np.log10(df['readout'])
+df = df[['id', 'readout']]
+```
 
-$$\Theta(x) = \left\{\begin{array}{l}
-0\textrm{ if } x < 0\cr
-1\textrm{ else}
-\end{array}\right.$$
-
+In addition to being designed for a fluent interface, domain-specific modules with optional dependencies are also available. For example, `pyjanitor` is used by EM for cheminformatics modelling work at NIBR, and has a number of convenience routines for generating RDKit in silico molecule objects and chemical fingerprints. Biology- and finance-oriented submodules are also under development.
 
 # Citations
 
